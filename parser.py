@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from models import URL_Information
+from asyncpg.exceptions import UniqueViolationError
 
 
 class URL_Parser:
@@ -41,5 +42,8 @@ class URL_Parser:
             for name_tag in tags_array
         ]
 
-        instance = await URL_Information.create(data=str(DATA), url=self.URL)
-        return {'id': instance.id}
+        try:
+            instance = await URL_Information.create(data=str(DATA), url=self.URL)
+            return {'id': instance.id}
+        except UniqueViolationError:
+            return {'error': 'Key (url)=({}) already exists'.format(self.URL)}

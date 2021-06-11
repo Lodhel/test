@@ -2,7 +2,6 @@ import os
 import asyncio
 
 from gino import Gino
-from sqlalchemy.dialects.postgresql import JSONB
 
 
 DATABASE = {

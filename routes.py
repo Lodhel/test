@@ -5,6 +5,7 @@ from aiohttp.web_response import json_response
 from aiohttp_cors import CorsViewMixin
 
 from parser import URL_Parser
+from models import URL_Information
 
 
 routes = web.RouteTableDef()
@@ -19,8 +20,19 @@ class CHECK_URL_ViewSet(web.View, CorsViewMixin):
         if not URL:
             return json_response({"error": "url field is None"})
 
-        __result = await URL_Parser(URL).make_data()
-        return json_response(__result)
+        _result = await URL_Parser(URL).make_data()
+        return json_response(_result)
 
-    async def get(self):  # TODO realise
-        pass
+    async def get(self):
+        _data = await self.request.json()
+        try:
+            _pk: int = _data.get('pk', None)
+        except Exception as ex:
+            return json_response({'error': str(ex)})
+        if not _pk:
+            return json_response({"error": "pk field is None"})
+        instance = await URL_Information.get(_pk)
+        if instance:
+            return json_response({"data": eval(instance.data)})
+        else:
+            return json_response({"data": None})
