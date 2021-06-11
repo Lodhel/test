@@ -1,0 +1,4 @@
+aiohttp==3.7.4.post0
+aiohttp-cors==0.7.0
+bs4==0.0.1
+requests==2.25.1
