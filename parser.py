@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 
+from models import URL_Information
+
 
 class URL_Parser:
 
@@ -23,12 +25,12 @@ class URL_Parser:
     def get_nested(self, _name_tag, soup):
         return len([i for i in soup.findChild(_name_tag).children if i.name])
 
-    def make_data(self):
+    async def make_data(self):
         soup = self.get_url_request()
         if not soup[0]:
             return soup[1]
         tags_array = sorted(set(child.name for child in soup[1].recursiveChildGenerator() if child.name))
-        return [
+        DATA = [
             {
                 name_tag:
                     {
@@ -38,3 +40,6 @@ class URL_Parser:
             }
             for name_tag in tags_array
         ]
+
+        instance = await URL_Information.create(data=str(DATA), url=self.URL)
+        return {'id': instance.id}

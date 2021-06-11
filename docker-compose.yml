@@ -7,4 +7,17 @@ services:
       - ./:/usr/src/app/
     ports:
       - 8000:8080
+    env_file:
+      - ./.env
     restart: always
+
+  db:
+    image: postgres:12.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+    restart: always
+
+volumes:
+  postgres_data:
